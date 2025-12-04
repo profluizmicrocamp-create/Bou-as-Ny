@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bouças NY - Encontre sua Bolsa em Nova York</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">🌎 Bouças NY</h1>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link active">Home</a>
+                    <a href="pages/vagas.html" class="nav-link">Vagas</a>
+                    <a href="pages/login.html" class="nav-link">Entrar</a>
+                    <a href="pages/favoritos.html" class="nav-link" id="favoritos-link" style="display: none;">Favoritos</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="banner">
+            <div class="container">
+                <div class="banner-content">
+                    <h2 class="banner-title">Encontre sua Bolsa em Nova York</h2>
+                    <p class="banner-subtitle">Descubra oportunidades de intercâmbio, estudo e trabalho na Big Apple</p>
+                    <div class="search-box">
+                        <input type="text" id="home-search" placeholder="Buscar vagas por palavra-chave..." class="search-input">
+                        <button onclick="window.location.href='pages/vagas.html?search=' + document.getElementById('home-search').value" class="btn btn-primary">Encontrar Vagas</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="como-funciona">
+            <div class="container">
+                <h2 class="section-title">Como Funciona</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon">🔍</div>
+                        <h3>1. Busque</h3>
+                        <p>Use nossa busca avançada para encontrar vagas que combinam com seu perfil</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">💾</div>
+                        <h3>2. Salve</h3>
+                        <p>Guarde suas vagas favoritas para consultar depois</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">📝</div>
+                        <h3>3. Candidate-se</h3>
+                        <p>Envie sua candidatura diretamente pela plataforma</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="vagas-recentes">
+            <div class="container">
+                <h2 class="section-title">Vagas Recentes</h2>
+                <div class="vagas-grid" id="vagas-recentes">
+                    <!-- Vagas serão carregadas via JavaScript -->
+                </div>
+                <div class="text-center">
+                    <a href="pages/vagas.html" class="btn btn-secondary">Ver Todas as Vagas</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="sobre">
+            <div class="container">
+                <h2 class="section-title">Sobre o Intercâmbio em Nova York</h2>
+                <div class="sobre-content">
+                    <p>Nova York é um dos destinos mais procurados por estudantes brasileiros que buscam experiências internacionais. A cidade oferece oportunidades únicas em diversas áreas, desde tecnologia até artes, negócios e saúde.</p>
+                    <p>Nossa plataforma reúne as melhores oportunidades de bolsas, estágios e programas de intercâmbio disponíveis na Big Apple, facilitando o processo de busca e candidatura para estudantes brasileiros.</p>
+                    <div class="beneficios-list">
+                        <div class="beneficio-item">
+                            <strong>🎓 Bolsas de Estudo</strong>
+                            <p>Programas acadêmicos com suporte financeiro</p>
+                        </div>
+                        <div class="beneficio-item">
+                            <strong>💼 Estágios</strong>
+                            <p>Experiência profissional em empresas renomadas</p>
+                        </div>
+                        <div class="beneficio-item">
+                            <strong>🤝 Voluntariado</strong>
+                            <p>Oportunidades de impacto social e cultural</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Bouças NY</h3>
+                    <p>Conectando estudantes brasileiros com oportunidades em Nova York</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Rápidos</h4>
+                    <ul>
+                        <li><a href="pages/vagas.html">Buscar Vagas</a></li>
+                        <li><a href="pages/login.html">Entrar</a></li>
+                        <li><a href="pages/cadastro.html">Criar Conta</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contato</h4>
+                    <p>Email: contato@boucasny.com</p>
+                    <p>Telefone: (11) 9999-9999</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Redes Sociais</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link">Facebook</a>
+                        <a href="#" class="social-link">Instagram</a>
+                        <a href="#" class="social-link">LinkedIn</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Bouças NY. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { getVagas, getCurrentUser, isFavorito, toggleFavorito } from './js/app.js';
+
+        // Verificar se usuário está logado
+        const user = getCurrentUser();
+        if (user) {
+            document.getElementById('favoritos-link').style.display = 'inline-block';
+        }
+
+        // Funções globais para interação
+        window.toggleFavoritoHome = function(id) {
+            if (!user) {
+                alert('Faça login para salvar favoritos');
+                window.location.href = 'pages/login.html';
+                return;
+            }
+            toggleFavorito(id);
+            location.reload(); // Recarregar para atualizar ícones
+        };
+
+        window.candidatarRapidoHome = function(id, titulo) {
+            if (!user) {
+                alert('Faça login para se candidatar');
+                window.location.href = 'pages/login.html';
+                return;
+            }
+            if (confirm(`Deseja se candidatar para a vaga: "${titulo}"?`)) {
+                alert('Candidatura enviada com sucesso! Entraremos em contato em breve.');
+            }
+        };
+
+        // Carregar vagas recentes
+        window.addEventListener('DOMContentLoaded', () => {
+            const vagas = getVagas().slice(0, 6);
+            const container = document.getElementById('vagas-recentes');
+            if (vagas.length === 0) {
+                container.innerHTML = '<p class="text-center">Nenhuma vaga disponível no momento.</p>';
+            } else {
+                container.innerHTML = vagas.map(vaga => {
+                    const favoritada = user ? isFavorito(vaga.id) : false;
+                    const tituloEscapado = vaga.titulo.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    return `
+                    <div class="vaga-card">
+                        <div class="vaga-header">
+                            <div>
+                                <span class="vaga-tipo">${vaga.tipo}</span>
+                                <span class="vaga-area">${vaga.area}</span>
+                            </div>
+                            ${user ? `
+                                <button onclick="toggleFavoritoHome(${vaga.id})" class="btn-favorito-lista ${favoritada ? 'favoritada' : ''}" title="${favoritada ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}">
+                                    ${favoritada ? '❤️' : '🤍'}
+                                </button>
+                            ` : ''}
+                        </div>
+                        <h3 class="vaga-titulo">${vaga.titulo}</h3>
+                        <p class="vaga-descricao">${vaga.descricao.substring(0, 120)}...</p>
+                        <div class="vaga-info">
+                            <span>⏱️ ${vaga.duracao}</span>
+                            <span>📍 Nova York, EUA</span>
+                        </div>
+                        <div class="vaga-actions">
+                            <a href="pages/vaga-detalhe.html?id=${vaga.id}" class="btn btn-primary btn-sm">Ver Detalhes</a>
+                            ${user ? `
+                                <button onclick="candidatarRapidoHome(${vaga.id}, '${tituloEscapado}')" class="btn btn-secondary btn-sm">Candidatar-se</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                }).join('');
+            }
+        });
+    </script>
+</body>
+</html>
+
