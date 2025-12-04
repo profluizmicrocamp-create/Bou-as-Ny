@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Vaga - Bouças NY</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo"><a href="../index.html" style="text-decoration: none; color: inherit;">🌎 Bouças NY</a></h1>
+                <nav class="nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="vagas.html" class="nav-link">Vagas</a>
+                    <a href="login.html" class="nav-link">Entrar</a>
+                    <a href="favoritos.html" class="nav-link" id="favoritos-link" style="display: none;">Favoritos</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="vaga-detalhe-section">
+            <div class="container">
+                <a href="vagas.html" class="btn-back">← Voltar para vagas</a>
+                
+                <div id="vaga-detalhe-content">
+                    <!-- Conteúdo será carregado via JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Bouças NY</h3>
+                    <p>Conectando estudantes brasileiros com oportunidades em Nova York</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Bouças NY. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { getVagaById, toggleFavorito, isFavorito } from '../js/app.js';
+
+        // Verificar se usuário está logado
+        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (user) {
+            document.getElementById('favoritos-link').style.display = 'inline-block';
+        }
+
+        // Carregar vaga
+        const urlParams = new URLSearchParams(window.location.search);
+        const vagaId = parseInt(urlParams.get('id'));
+
+        if (!vagaId) {
+            document.getElementById('vaga-detalhe-content').innerHTML = '<p>Vaga não encontrada.</p>';
+        } else {
+            const vaga = getVagaById(vagaId);
+            
+            if (!vaga) {
+                document.getElementById('vaga-detalhe-content').innerHTML = '<p>Vaga não encontrada.</p>';
+            } else {
+                const favoritada = user ? isFavorito(vagaId) : false;
+                
+                document.getElementById('vaga-detalhe-content').innerHTML = `
+                    <div class="vaga-detalhe">
+                        <div class="vaga-detalhe-header">
+                            <div class="vaga-detalhe-tags">
+                                <span class="tag tag-tipo">${vaga.tipo}</span>
+                                <span class="tag tag-area">${vaga.area}</span>
+                            </div>
+                            <h1 class="vaga-detalhe-titulo">${vaga.titulo}</h1>
+                            <div class="vaga-detalhe-meta">
+                                <span>📍 Nova York, EUA</span>
+                                <span>⏱️ ${vaga.duracao}</span>
+                            </div>
+                        </div>
+
+                        <div class="vaga-detalhe-body">
+                            <div class="vaga-detalhe-main">
+                                <div class="vaga-detalhe-section-content">
+                                    <h2>Descrição</h2>
+                                    <p>${vaga.descricao}</p>
+                                </div>
+
+                                <div class="vaga-detalhe-section-content">
+                                    <h2>Requisitos</h2>
+                                    <ul class="requisitos-list">
+                                        ${vaga.requisitos.map(req => `<li>${req}</li>`).join('')}
+                                    </ul>
+                                </div>
+
+                                <div class="vaga-detalhe-section-content">
+                                    <h2>Benefícios</h2>
+                                    <ul class="beneficios-list">
+                                        ${vaga.beneficios.map(ben => `<li>${ben}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <aside class="vaga-detalhe-sidebar">
+                                <div class="info-card">
+                                    <h3>Informações Rápidas</h3>
+                                    <div class="info-item">
+                                        <strong>Tipo:</strong>
+                                        <span>${vaga.tipo}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>Área:</strong>
+                                        <span>${vaga.area}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>Duração:</strong>
+                                        <span>${vaga.duracao}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>Localização:</strong>
+                                        <span>Nova York, EUA</span>
+                                    </div>
+                                </div>
+
+                                <div class="actions-card">
+                                    ${user ? `
+                                        <button onclick="toggleFavoritoVaga(${vaga.id})" class="btn ${favoritada ? 'btn-secondary' : 'btn-primary'} btn-block" id="btn-favorito">
+                                            ${favoritada ? '❤️ Remover dos Favoritos' : '🤍 Salvar nos Favoritos'}
+                                        </button>
+                                    ` : `
+                                        <p class="text-center">Faça <a href="login.html">login</a> para salvar esta vaga</p>
+                                    `}
+                                    <button onclick="candidatarSe()" class="btn btn-primary btn-block">📝 Candidatar-se</button>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function toggleFavoritoVaga(id) {
+            if (!user) {
+                alert('Faça login para salvar favoritos');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            toggleFavorito(id);
+            const favoritada = isFavorito(id);
+            const btn = document.getElementById('btn-favorito');
+            btn.textContent = favoritada ? '❤️ Remover dos Favoritos' : '🤍 Salvar nos Favoritos';
+            btn.className = `btn ${favoritada ? 'btn-secondary' : 'btn-primary'} btn-block`;
+        }
+
+        function candidatarSe() {
+            if (!user) {
+                if (confirm('Faça login para se candidatar. Deseja ir para a página de login?')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+            
+            if (vaga) {
+                if (confirm(`Deseja se candidatar para a vaga: "${vaga.titulo}"?\n\nVocê receberá um e-mail com mais informações em breve.`)) {
+                    alert('✅ Candidatura enviada com sucesso!\n\nEntraremos em contato em até 48 horas.');
+                }
+            } else {
+                alert('Erro ao processar candidatura. Tente novamente.');
+            }
+        }
+
+        window.toggleFavoritoVaga = toggleFavoritoVaga;
+        window.candidatarSe = candidatarSe;
+    </script>
+</body>
+</html>
+

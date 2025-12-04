@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favoritos - Bouças NY</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo"><a href="../index.html" style="text-decoration: none; color: inherit;">🌎 Bouças NY</a></h1>
+                <nav class="nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="vagas.html" class="nav-link">Vagas</a>
+                    <a href="login.html" class="nav-link" id="login-link">Entrar</a>
+                    <a href="favoritos.html" class="nav-link active">Favoritos</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="favoritos-section">
+            <div class="container">
+                <h2 class="section-title">Minhas Vagas Favoritas</h2>
+                <div id="favoritos-content">
+                    <!-- Conteúdo será carregado via JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Bouças NY</h3>
+                    <p>Conectando estudantes brasileiros com oportunidades em Nova York</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Bouças NY. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { getFavoritos, getVagaById, toggleFavorito } from '../js/app.js';
+
+        // Verificar se usuário está logado
+        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!user) {
+            document.getElementById('favoritos-content').innerHTML = `
+                <div class="auth-required">
+                    <p>Você precisa estar logado para ver seus favoritos.</p>
+                    <a href="login.html" class="btn btn-primary">Fazer Login</a>
+                </div>
+            `;
+        } else {
+            document.getElementById('login-link').style.display = 'none';
+            
+            const favoritos = getFavoritos();
+            
+            if (favoritos.length === 0) {
+                document.getElementById('favoritos-content').innerHTML = `
+                    <div class="empty-state">
+                        <p>Você ainda não salvou nenhuma vaga nos favoritos.</p>
+                        <a href="vagas.html" class="btn btn-primary">Buscar Vagas</a>
+                    </div>
+                `;
+            } else {
+                const vagas = favoritos.map(id => getVagaById(id)).filter(v => v !== null);
+                
+                document.getElementById('favoritos-content').innerHTML = `
+                    <div class="vagas-grid">
+                        ${vagas.map(vaga => {
+                            const tituloEscapado = vaga.titulo.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            return `
+                            <div class="vaga-card">
+                                <div class="vaga-header">
+                                    <div>
+                                        <span class="vaga-tipo">${vaga.tipo}</span>
+                                        <span class="vaga-area">${vaga.area}</span>
+                                    </div>
+                                    <button onclick="removerFavorito(${vaga.id})" class="btn-favorito-lista favoritada" title="Remover dos favoritos">
+                                        ❤️
+                                    </button>
+                                </div>
+                                <h3 class="vaga-titulo">${vaga.titulo}</h3>
+                                <p class="vaga-descricao">${vaga.descricao.substring(0, 120)}...</p>
+                                <div class="vaga-info">
+                                    <span>⏱️ ${vaga.duracao}</span>
+                                    <span>📍 Nova York, EUA</span>
+                                </div>
+                                <div class="vaga-actions">
+                                    <a href="vaga-detalhe.html?id=${vaga.id}" class="btn btn-primary btn-sm">Ver Detalhes</a>
+                                    <button onclick="candidatarFavorito(${vaga.id}, '${tituloEscapado}')" class="btn btn-secondary btn-sm">Candidatar-se</button>
+                                </div>
+                            </div>
+                        `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+        }
+
+        window.removerFavorito = function(id) {
+            if (confirm('Deseja remover esta vaga dos favoritos?')) {
+                toggleFavorito(id);
+                location.reload();
+            }
+        };
+
+        window.candidatarFavorito = function(id, titulo) {
+            if (confirm(`Deseja se candidatar para a vaga: "${titulo}"?`)) {
+                alert('✅ Candidatura enviada com sucesso! Entraremos em contato em breve.');
+            }
+        };
+    </script>
+</body>
+</html>
+

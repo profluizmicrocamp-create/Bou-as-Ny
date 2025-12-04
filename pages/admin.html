@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Bouças NY</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo"><a href="../index.html" style="text-decoration: none; color: inherit;">🌎 Bouças NY</a></h1>
+                <nav class="nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="vagas.html" class="nav-link">Vagas</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="admin-section">
+            <div class="container">
+                <h2 class="section-title">Painel Administrativo</h2>
+                
+                <div id="admin-login" class="admin-login">
+                    <div class="auth-card">
+                        <h3>Login Administrativo</h3>
+                        <form onsubmit="fazerLoginAdmin(event)">
+                            <div class="form-group">
+                                <label>Usuário</label>
+                                <input type="text" id="admin-user" class="input" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Senha</label>
+                                <input type="password" id="admin-password" class="input" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+                        </form>
+                        <p class="text-center" style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                            Credenciais: admin / admin123
+                        </p>
+                    </div>
+                </div>
+
+                <div id="admin-panel" style="display: none;">
+                    <div class="admin-layout">
+                        <div class="admin-form-section">
+                            <h3>Adicionar Nova Vaga</h3>
+                            <form id="vaga-form" onsubmit="salvarVaga(event)">
+                                <div class="form-group">
+                                    <label>Título</label>
+                                    <input type="text" id="vaga-titulo" class="input" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Tipo</label>
+                                        <select id="vaga-tipo" class="input" required>
+                                            <option value="Bolsa de Estudo">Bolsa de Estudo</option>
+                                            <option value="Estágio">Estágio</option>
+                                            <option value="Voluntariado">Voluntariado</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Área</label>
+                                        <select id="vaga-area" class="input" required>
+                                            <option value="TI">TI</option>
+                                            <option value="Business">Business</option>
+                                            <option value="Artes">Artes</option>
+                                            <option value="Saúde">Saúde</option>
+                                            <option value="Educação">Educação</option>
+                                            <option value="Engenharia">Engenharia</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Duração</label>
+                                    <select id="vaga-duracao" class="input" required>
+                                        <option value="3 meses">3 meses</option>
+                                        <option value="6 meses">6 meses</option>
+                                        <option value="1 ano">1 ano</option>
+                                        <option value="2 anos">2 anos</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Descrição</label>
+                                    <textarea id="vaga-descricao" class="input" rows="5" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Requisitos (separados por vírgula)</label>
+                                    <input type="text" id="vaga-requisitos" class="input" placeholder="Inglês, Graduação, Experiência" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Benefícios (separados por vírgula)</label>
+                                    <input type="text" id="vaga-beneficios" class="input" placeholder="Bolsa mensal, Acomodação, Seguro saúde" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="vaga-status" class="input">
+                                        <option value="publicada">Publicada</option>
+                                        <option value="rascunho">Rascunho</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" id="vaga-id" value="">
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Salvar Vaga</button>
+                                    <button type="button" onclick="limparFormulario()" class="btn btn-secondary">Limpar</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="admin-list-section">
+                            <h3>Vagas Cadastradas</h3>
+                            <div id="vagas-list">
+                                <!-- Lista será carregada via JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Bouças NY</h3>
+                    <p>Conectando estudantes brasileiros com oportunidades em Nova York</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Bouças NY. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../js/admin.js"></script>
+</body>
+</html>
+

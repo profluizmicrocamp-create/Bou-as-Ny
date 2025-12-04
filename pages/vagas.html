@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Vagas - Bouças NY</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo"><a href="../index.html" style="text-decoration: none; color: inherit;">🌎 Bouças NY</a></h1>
+                <nav class="nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="vagas.html" class="nav-link active">Vagas</a>
+                    <a href="login.html" class="nav-link">Entrar</a>
+                    <a href="favoritos.html" class="nav-link" id="favoritos-link" style="display: none;">Favoritos</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="busca-section">
+            <div class="container">
+                <h2 class="section-title">Buscar Vagas</h2>
+                <div class="busca-layout">
+                    <aside class="filtros-sidebar">
+                        <h3>Filtros</h3>
+                        
+                        <div class="filtro-group">
+                            <label>Busca por palavra-chave</label>
+                            <input type="text" id="filtro-busca" placeholder="Digite palavras-chave..." class="input">
+                        </div>
+
+                        <div class="filtro-group">
+                            <label>Tipo da Vaga</label>
+                            <select id="filtro-tipo" class="select">
+                                <option value="">Todos</option>
+                                <option value="Bolsa de Estudo">Bolsa de Estudo</option>
+                                <option value="Estágio">Estágio</option>
+                                <option value="Voluntariado">Voluntariado</option>
+                            </select>
+                        </div>
+
+                        <div class="filtro-group">
+                            <label>Área</label>
+                            <select id="filtro-area" class="select">
+                                <option value="">Todas</option>
+                                <option value="TI">TI</option>
+                                <option value="Business">Business</option>
+                                <option value="Artes">Artes</option>
+                                <option value="Saúde">Saúde</option>
+                                <option value="Educação">Educação</option>
+                                <option value="Engenharia">Engenharia</option>
+                            </select>
+                        </div>
+
+                        <div class="filtro-group">
+                            <label>Duração</label>
+                            <select id="filtro-duracao" class="select">
+                                <option value="">Todas</option>
+                                <option value="3 meses">3 meses</option>
+                                <option value="6 meses">6 meses</option>
+                                <option value="1 ano">1 ano</option>
+                                <option value="2 anos">2 anos</option>
+                            </select>
+                        </div>
+
+                        <div class="filtro-group">
+                            <label>Requisitos</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" value="Inglês" id="req-ingles"> Inglês</label>
+                                <label><input type="checkbox" value="Graduação" id="req-graduacao"> Graduação</label>
+                                <label><input type="checkbox" value="Experiência" id="req-experiencia"> Experiência</label>
+                            </div>
+                        </div>
+
+                        <button onclick="aplicarFiltros()" class="btn btn-primary btn-block">Aplicar Filtros</button>
+                        <button onclick="limparFiltros()" class="btn btn-secondary btn-block">Limpar</button>
+                    </aside>
+
+                    <div class="resultados-area">
+                        <div class="resultados-header">
+                            <p id="resultados-count">Carregando vagas...</p>
+                        </div>
+                        <div class="vagas-lista" id="vagas-lista">
+                            <!-- Vagas serão carregadas via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Bouças NY</h3>
+                    <p>Conectando estudantes brasileiros com oportunidades em Nova York</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Links Rápidos</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="vagas.html">Buscar Vagas</a></li>
+                        <li><a href="login.html">Entrar</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Bouças NY. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { getVagas, filtrarVagas, isFavorito, toggleFavorito } from '../js/app.js';
+
+        // Verificar se usuário está logado
+        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (user) {
+            document.getElementById('favoritos-link').style.display = 'inline-block';
+        }
+
+        // Carregar parâmetros da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchParam = urlParams.get('search');
+        if (searchParam) {
+            document.getElementById('filtro-busca').value = searchParam;
+        }
+
+        function aplicarFiltros() {
+            const busca = document.getElementById('filtro-busca').value.toLowerCase();
+            const tipo = document.getElementById('filtro-tipo').value;
+            const area = document.getElementById('filtro-area').value;
+            const duracao = document.getElementById('filtro-duracao').value;
+            
+            const requisitos = [];
+            if (document.getElementById('req-ingles').checked) requisitos.push('Inglês');
+            if (document.getElementById('req-graduacao').checked) requisitos.push('Graduação');
+            if (document.getElementById('req-experiencia').checked) requisitos.push('Experiência');
+
+            const filtros = { busca, tipo, area, duracao, requisitos };
+            const vagasFiltradas = filtrarVagas(filtros);
+            exibirVagas(vagasFiltradas);
+        }
+
+        function limparFiltros() {
+            document.getElementById('filtro-busca').value = '';
+            document.getElementById('filtro-tipo').value = '';
+            document.getElementById('filtro-area').value = '';
+            document.getElementById('filtro-duracao').value = '';
+            document.getElementById('req-ingles').checked = false;
+            document.getElementById('req-graduacao').checked = false;
+            document.getElementById('req-experiencia').checked = false;
+            aplicarFiltros();
+        }
+
+        function exibirVagas(vagas) {
+            const container = document.getElementById('vagas-lista');
+            const count = document.getElementById('resultados-count');
+            
+            count.textContent = `${vagas.length} vaga(s) encontrada(s)`;
+
+            if (vagas.length === 0) {
+                container.innerHTML = '<p class="text-center">Nenhuma vaga encontrada com os filtros selecionados.</p>';
+                return;
+            }
+
+            container.innerHTML = vagas.map(vaga => {
+                const favoritada = user ? isFavorito(vaga.id) : false;
+                const tituloEscapado = vaga.titulo.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                return `
+                <div class="vaga-item">
+                    <div class="vaga-item-header">
+                        <div>
+                            <h3 class="vaga-item-titulo">${vaga.titulo}</h3>
+                            <div class="vaga-item-tags">
+                                <span class="tag tag-tipo">${vaga.tipo}</span>
+                                <span class="tag tag-area">${vaga.area}</span>
+                            </div>
+                        </div>
+                        ${user ? `
+                            <button onclick="toggleFavoritoLista(${vaga.id})" class="btn-favorito-lista ${favoritada ? 'favoritada' : ''}" title="${favoritada ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}">
+                                ${favoritada ? '❤️' : '🤍'}
+                            </button>
+                        ` : ''}
+                    </div>
+                    <p class="vaga-item-descricao">${vaga.descricao.substring(0, 200)}...</p>
+                    <div class="vaga-item-info">
+                        <span>⏱️ ${vaga.duracao}</span>
+                        <span>📍 Nova York, EUA</span>
+                        <span>📋 ${vaga.requisitos.join(', ')}</span>
+                    </div>
+                    <div class="vaga-item-actions">
+                        <a href="vaga-detalhe.html?id=${vaga.id}" class="btn btn-primary">Ver Detalhes</a>
+                        ${user ? `
+                            <button onclick="candidatarRapido(${vaga.id}, '${tituloEscapado}')" class="btn btn-secondary">Candidatar-se</button>
+                        ` : `
+                            <a href="login.html" class="btn btn-secondary">Login para Candidatar</a>
+                        `}
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        // Aplicar filtros ao carregar
+        window.addEventListener('DOMContentLoaded', () => {
+            aplicarFiltros();
+        });
+
+        // Busca em tempo real
+        document.getElementById('filtro-busca').addEventListener('input', aplicarFiltros);
+        document.getElementById('filtro-tipo').addEventListener('change', aplicarFiltros);
+        document.getElementById('filtro-area').addEventListener('change', aplicarFiltros);
+        document.getElementById('filtro-duracao').addEventListener('change', aplicarFiltros);
+
+        // Funções globais para interação
+        window.toggleFavoritoLista = function(id) {
+            if (!user) {
+                alert('Faça login para salvar favoritos');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            toggleFavorito(id);
+            aplicarFiltros(); // Recarregar lista para atualizar ícones
+        };
+
+        window.candidatarRapido = function(id, titulo) {
+            if (!user) {
+                alert('Faça login para se candidatar');
+                window.location.href = 'login.html';
+                return;
+            }
+            if (confirm(`Deseja se candidatar para a vaga: "${titulo}"?`)) {
+                alert('Candidatura enviada com sucesso! Entraremos em contato em breve.');
+            }
+        };
+    </script>
+</body>
+</html>
+

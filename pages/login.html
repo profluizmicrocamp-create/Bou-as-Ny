@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Bouças NY</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo"><a href="../index.html" style="text-decoration: none; color: inherit;">🌎 Bouças NY</a></h1>
+                <nav class="nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="vagas.html" class="nav-link">Vagas</a>
+                    <a href="login.html" class="nav-link active">Entrar</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="auth-section">
+            <div class="container">
+                <div class="auth-container">
+                    <div class="auth-card">
+                        <h2>Entrar</h2>
+                        <form id="login-form" onsubmit="fazerLogin(event)">
+                            <div class="form-group">
+                                <label for="email">E-mail</label>
+                                <input type="email" id="email" name="email" class="input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="senha">Senha</label>
+                                <input type="password" id="senha" name="senha" class="input" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+                        </form>
+                        <p class="auth-link">
+                            Não tem uma conta? <a href="cadastro.html">Criar conta</a>
+                        </p>
+                        <div id="login-message" class="message"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Bouças NY</h3>
+                    <p>Conectando estudantes brasileiros com oportunidades em Nova York</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Bouças NY. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { fazerLogin } from '../js/app.js';
+
+        window.fazerLogin = function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const messageEl = document.getElementById('login-message');
+
+            const sucesso = fazerLogin(email, senha);
+            
+            if (sucesso) {
+                messageEl.textContent = 'Login realizado com sucesso!';
+                messageEl.className = 'message message-success';
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1000);
+            } else {
+                messageEl.textContent = 'E-mail ou senha incorretos.';
+                messageEl.className = 'message message-error';
+            }
+        };
+    </script>
+</body>
+</html>
+
